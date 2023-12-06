@@ -1,0 +1,72 @@
+type Query {
+    helloworld: String
+    greet(name: String! @Size(min: 5, max: 10, message: "name length should be in 5 to 10 chars")): String!
+    getRandomNumbers: [Int!]!
+    getEvent: Event!
+    getPosts: [Post!]!
+    recentPosts(page: Int!, size: Int!): [Post!]!
+    getUsers(page: Int!, size: Int!): [User!]!
+    getComments(page: Int!, size: Int): [Comment!]!
+    test(
+        date: Date,
+        bornAt: DateTime,
+        phoneNumber: PhoneNumber!,
+        email: Email
+     ): String!
+    validationCheck(
+        name: String @NotBlank(message: "It cant be empty"),
+        list: [Int!] @ContainerNotEmpty(message: "It cant be empty"),
+        email: String @Pattern(regexp: "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message: "It should be valid email")
+    ): String @Uppercase
+}
+
+type Mutation {
+    addUser(addUserInput: AddUserInput!): ID!
+    addPost(addPostInput: AddPostInput!): Post!
+    addComment(addCommentInput: AddCommentInput): Comment!
+    login(username: String!, password: String!): String!
+}
+
+input AddCommentInput {
+    text: String!
+    postId: ID!
+}
+
+input AddPostInput {
+    title: String!
+    description: String
+}
+
+input AddUserInput {
+    name: String!
+    password: String!
+    roles: String!
+}
+
+type Post {
+    id: ID!
+    title: String!
+    description: String
+    author: User
+    comments: [Comment!]!
+}
+
+type User {
+    id: ID!
+    name: String!
+    posts: [Post!]!
+    totalPost: Int!
+    comments: [Comment!]!
+}
+
+type Comment {
+    id: ID!
+    text: String!
+    author: User!
+    post: Post!
+}
+
+type Event {
+    id: ID!
+    eventType: String!
+}
