@@ -17,6 +17,9 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 15s
 
+  main:
+    allow-circular-references: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -92,8 +95,7 @@ axon:
   eventhandling:
     processors:
       order-group:
-        mode: subscribing
+        mode: tracking
 
   axonserver:
     servers: axonserver:8124
-    token: 123abc

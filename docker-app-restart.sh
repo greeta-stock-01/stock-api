@@ -1,22 +1,12 @@
+#provide service name as a script parameter. For example: product
+
 docker-compose -f docker-app-compose.yml down
 
 mvn clean install -DskipTests
 
-cd ./user-service
+cd ./$1-service
 mvn spring-boot:build-image -DskipTests \
-  -Dspring-boot.build-image.imageName=user-service
-
-cd ../product-service
-mvn spring-boot:build-image -DskipTests \
-  -Dspring-boot.build-image.imageName=product-service
-
-cd ../order-service
-mvn spring-boot:build-image -DskipTests \
-  -Dspring-boot.build-image.imageName=order-service
-
-cd ../gateway-service
-mvn spring-boot:build-image -DskipTests \
-  -Dspring-boot.build-image.imageName=gateway-service
+  -Dspring-boot.build-image.imageName=$1-service
 
 cd ../
 

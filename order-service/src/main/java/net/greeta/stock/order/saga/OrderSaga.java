@@ -1,10 +1,18 @@
 package net.greeta.stock.order.saga;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
-
-import net.greeta.stock.order.command.commands.RejectOrderCommand;
+import net.greeta.stock.core.commands.CancelProductReservationCommand;
+import net.greeta.stock.core.commands.ProcessPaymentCommand;
+import net.greeta.stock.core.commands.ReserveProductCommand;
+import net.greeta.stock.core.events.PaymentProcessedEvent;
+import net.greeta.stock.core.events.ProductReservationCancelledEvent;
+import net.greeta.stock.core.events.ProductReservedEvent;
+import net.greeta.stock.core.model.User;
+import net.greeta.stock.core.query.FetchUserPaymentDetailsQuery;
+import net.greeta.stock.order.command.commands.*;
+import net.greeta.stock.order.core.events.OrderApprovedEvent;
+import net.greeta.stock.order.core.events.OrderCreatedEvent;
+import net.greeta.stock.order.core.events.OrderRejectedEvent;
+import net.greeta.stock.order.core.model.OrderSummary;
 import net.greeta.stock.order.query.FindOrderQuery;
 import org.axonframework.commandhandling.CommandCallback;
 import org.axonframework.commandhandling.CommandMessage;
@@ -23,19 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import net.greeta.stock.order.command.commands.ApproveOrderCommand;
-import net.greeta.stock.order.core.events.OrderApprovedEvent;
-import net.greeta.stock.order.core.events.OrderCreatedEvent;
-import net.greeta.stock.order.core.events.OrderRejectedEvent;
-import net.greeta.stock.order.core.model.OrderSummary;
-import net.greeta.stock.core.commands.CancelProductReservationCommand;
-import net.greeta.stock.core.commands.ProcessPaymentCommand;
-import net.greeta.stock.core.commands.ReserveProductCommand;
-import net.greeta.stock.core.events.PaymentProcessedEvent;
-import net.greeta.stock.core.events.ProductReservationCancelledEvent;
-import net.greeta.stock.core.events.ProductReservedEvent;
-import net.greeta.stock.core.model.User;
-import net.greeta.stock.core.query.FetchUserPaymentDetailsQuery;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Saga
 public class OrderSaga {
@@ -153,7 +151,7 @@ public class OrderSaga {
 		
 		cancelDeadline();
 		
-		CancelProductReservationCommand publishProductReservationCommand = 
+		CancelProductReservationCommand publishProductReservationCommand =
 				CancelProductReservationCommand.builder()
 				.orderId(productReservedEvent.getOrderId())
 				.productId(productReservedEvent.getProductId())

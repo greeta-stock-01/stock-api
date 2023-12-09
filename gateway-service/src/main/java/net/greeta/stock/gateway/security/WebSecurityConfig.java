@@ -40,6 +40,15 @@ public class WebSecurityConfig {
                         .pathMatchers(HttpMethod.GET,"/order/v3/api-docs/**").permitAll()
                         .pathMatchers("/order", "/order/**").permitAll()
 
+                        .pathMatchers(HttpMethod.GET,"/customer/v3/api-docs/**").permitAll()
+                        .pathMatchers("/customer", "/customer/**").permitAll()
+
+                        .pathMatchers(HttpMethod.GET,"/restaurant/v3/api-docs/**").permitAll()
+                        .pathMatchers("/restaurant", "/restaurant/**").permitAll()
+
+                        .pathMatchers(HttpMethod.GET,"/food-ordering/v3/api-docs/**").permitAll()
+                        .pathMatchers("/food-ordering", "/food-ordering/**").permitAll()
+
                         .anyExchange().authenticated()
                         .and()
                         //.exceptionHandling(exceptionHandling -> exceptionHandling

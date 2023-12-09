@@ -9,8 +9,9 @@ services:
   # Backing Services
 
   stock-postgres:
-    image: "postgres:14.4"
+    image: postgres:15.3
     container_name: "stock-postgres"
+    restart: unless-stopped
     ports:
       - 5432:5432
     environment:
@@ -18,6 +19,17 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./docker-conf/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - stock
+
+  stock-mongodb:
+    image: mongo:6.0.6
+    container_name: "stock-mongodb"
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: "echo 'db.stats().ok' | mongosh localhost:27017/foodorderingdb --quiet"
     networks:
       - stock
 
@@ -81,6 +93,8 @@ services:
   axonserver:
     image: axoniq/axonserver:latest-jdk-17-dev
     hostname: axonserver
+    environment:
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true
     volumes:
       - axonserver-data:/axonserver/data
       - axonserver-events:/axonserver/events
@@ -93,10 +107,25 @@ services:
     networks:
       - stock
 
+  stock-mysql:
+    image: mysql:8.0.33
+    container_name: "stock-mysql"
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=customerdb
+    healthcheck:
+      test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
+    networks:
+      - stock
+
+
 
 volumes:
   axonserver-data:
-    driver: bridge
+    driver: local
     driver_opts:
       o: bind
       type: none

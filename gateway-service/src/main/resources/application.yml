@@ -80,7 +80,7 @@ spring:
                 fallbackUri: forward:/stock-fallback
 
         - id: order
-          uri: ${ORDER_SERVICE_URL:http://localhost:9003}
+          uri: ${ORDER_SERVICE_URL:http://localhost:9004}
           predicates:
             - Path=/order/**
           filters:
@@ -88,6 +88,39 @@ spring:
             - name: CircuitBreaker
               args:
                 name: orderCircuitBreaker
+                fallbackUri: forward:/stock-fallback
+
+        - id: customer
+          uri: ${CUSTOMER_SERVICE_URL:http://localhost:9005}
+          predicates:
+            - Path=/customer/**
+          filters:
+            - RewritePath=/customer/(?<path>.*), /$\{path}
+            - name: CircuitBreaker
+              args:
+                name: customerCircuitBreaker
+                fallbackUri: forward:/stock-fallback
+
+        - id: restaurant
+          uri: ${RESTAURANT_SERVICE_URL:http://localhost:9006}
+          predicates:
+            - Path=/restaurant/**
+          filters:
+            - RewritePath=/restaurant/(?<path>.*), /$\{path}
+            - name: CircuitBreaker
+              args:
+                name: restaurantCircuitBreaker
+                fallbackUri: forward:/stock-fallback
+
+        - id: food-ordering
+          uri: ${FOOD_ORDERING_SERVICE_URL:http://localhost:9007}
+          predicates:
+            - Path=/food-ordering/**
+          filters:
+            - RewritePath=/food-ordering/(?<path>.*), /$\{path}
+            - name: CircuitBreaker
+              args:
+                name: foodOrderingCircuitBreaker
                 fallbackUri: forward:/stock-fallback
 
   redis:
@@ -118,7 +151,7 @@ jwt:
       principal-attribute: preferred_username
 
 stock-app:
-  base-url: http://localhost:3000
+  base-url: http://localhost:9000
   redirect-url: ${stock-app.base-url}/*
 
 resilience4j:
@@ -188,3 +221,9 @@ springdoc:
         name: Product Service
       - url: /order/v3/api-docs
         name: Order Service
+      - url: /customer/v3/api-docs
+        name: Customer Service
+      - url: /restaurant/v3/api-docs
+        name: Restaurant Service
+      - url: /food-ordering/v3/api-docs
+        name: Food Ordering Service

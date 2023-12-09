@@ -1,10 +1,12 @@
-const restaurantServiceApiBaseUrl = "http://localhost:9081/api/restaurants"
+const restaurantServiceApiBaseUrl = "/restaurant/api/restaurants"
 
-function connectToWebSocket() {
-    const socket = new SockJS('/websocket')
+function connectToWebSocket(keycloak) {
+    const socket = new SockJS('/restaurant/websocket')
     const stompClient = Stomp.over(socket)
 
-    stompClient.connect({},
+    stompClient.connect({
+            Authorization: 'Bearer ' + keycloak.token
+        },
         function (frame) {
             console.log('Connected: ' + frame)
             $('.connWebSocket').find('i').removeClass('red').addClass('green')
@@ -40,9 +42,12 @@ function connectToWebSocket() {
     )
 }
 
-function loadRestaurants() {
+function loadRestaurants(keycloak) {
     $.ajax({
         url: restaurantServiceApiBaseUrl,
+        headers: {
+            Authorization: 'Bearer ' + keycloak.token
+        },
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
             data.forEach(restaurant => {
@@ -237,9 +242,21 @@ function showModal($modal, header, description, fnApprove) {
 }
 
 $(function () {
-    loadRestaurants()
+    // Initialize Keycloak
+    const keycloak = new Keycloak({
+        url: keycloakServerUrl,
+        realm: 'stock-realm',
+        clientId: 'stock-app',
+    });
 
-    connectToWebSocket()
+    // Initialize and connect to WebSocket after Keycloak is authenticated
+    keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
+        if (authenticated) {
+            loadRestaurants(keycloak);
+            connectToWebSocket(keycloak);
+            // Other code that requires authentication
+        }
+    });
 
     $('#restaurantForm button[name="btnSave"]').click(function(event) {
         event.preventDefault()
@@ -258,6 +275,9 @@ $(function () {
         $.ajax({
             type,
             url,
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             contentType: "application/json",
             data: JSON.stringify({name: restaurantData.name}),
             success: function(data, textStatus, jqXHR) {
@@ -275,6 +295,9 @@ $(function () {
             $.ajax({
                 type: "DELETE",
                 url: restaurantServiceApiBaseUrl.concat("/", id),
+                headers: {
+                    Authorization: 'Bearer ' + keycloak.token
+                },
                 success: function(data, textStatus, jqXHR) {},
                 error: function (jqXHR, textStatus, errorThrown) {}
             })
@@ -285,6 +308,9 @@ $(function () {
         const id = $(this).closest('div.item').attr('id')
         $.ajax({
             url: restaurantServiceApiBaseUrl.concat("/", id),
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             success: function(data, textStatus, jqXHR) {
                 fillRestaurantForm(data)
                 showRestaurantForm()
@@ -340,6 +366,9 @@ $(function () {
         $.ajax({
             type,
             url,
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             contentType: "application/json",
             data: JSON.stringify({
                 name: restaurantDishData.dishName,
@@ -372,6 +401,9 @@ $(function () {
             $.ajax({
                 type: "DELETE",
                 url: restaurantServiceApiBaseUrl.concat("/", restaurantId, "/dishes/", dishId),
+                headers: {
+                    Authorization: 'Bearer ' + keycloak.token
+                },
                 success: function(data, textStatus, jqXHR) {},
                 error: function (jqXHR, textStatus, errorThrown) {}
             })
@@ -383,6 +415,9 @@ $(function () {
         const dishId = $(this).closest('tr').attr('id')
         $.ajax({
             url: restaurantServiceApiBaseUrl.concat("/", restaurantId, "/dishes/", dishId),
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             success: function(data, textStatus, jqXHR) {
                 fillRestaurantDishForm(data)
                 showRestaurantDishForm()

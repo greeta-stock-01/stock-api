@@ -1,7 +1,9 @@
 package net.greeta.stock.product.command;
 
-import java.math.BigDecimal;
-
+import net.greeta.stock.core.commands.CancelProductReservationCommand;
+import net.greeta.stock.core.commands.ReserveProductCommand;
+import net.greeta.stock.core.events.ProductReservationCancelledEvent;
+import net.greeta.stock.core.events.ProductReservedEvent;
 import net.greeta.stock.product.core.events.ProductCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -10,10 +12,7 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
-import net.greeta.stock.core.commands.CancelProductReservationCommand;
-import net.greeta.stock.core.commands.ReserveProductCommand;
-import net.greeta.stock.core.events.ProductReservationCancelledEvent;
-import net.greeta.stock.core.events.ProductReservedEvent;
+import java.math.BigDecimal;
 
 @Aggregate(snapshotTriggerDefinition="productSnapshotTriggerDefinition")
 public class ProductAggregate {
