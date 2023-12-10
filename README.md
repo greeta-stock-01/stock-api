@@ -49,7 +49,7 @@ sh docker-start.sh
 
 - this script will build docker images and start environment with your code changes
 
-- Warning! Make sure that Axon Server is initialized after running this script! (see `Axon Server Troubleshooting` below)
+- Warning! Make sure that Axon Server is initialized! (see `Axon Server Troubleshooting` below for more information)
 
 ```
 sh docker-app-restart.sh customer
