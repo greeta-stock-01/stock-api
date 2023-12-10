@@ -24,9 +24,9 @@
     <li>✅ <b>Axon Event Streaming</b></li>
     <li>✅ <b>Axon Event Store</b></li>
     <li>✅ <b>Axon Event Monitoring Console</b></li>
-    <li>✅ <b>PostgreSQL Database</b></li>
-    <li>✅ <b>MySQL Database</b></li>
-    <li>✅ <b>MongoDB Database</b></li>
+    <li>✅ <b>CQRS Query Projection with PostgreSQL Database</b></li>
+    <li>✅ <b>CQRS Query Projection with MySQL Database</b></li>
+    <li>✅ <b>CQRS Query Projection with MongoDB Database</b></li>
     <li>✅ <b>Keycloak Oauth2 Authorization Server</b></li>
     <li>✅ <b>Local Docker Environment</b></li>
     <li>✅ <b>Remote Debugging</b></li>
