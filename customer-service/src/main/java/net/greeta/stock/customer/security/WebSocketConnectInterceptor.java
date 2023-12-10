@@ -1,4 +1,4 @@
-package net.greeta.stock.restaurant.security;
+package net.greeta.stock.customer.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;

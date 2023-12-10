@@ -3,12 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.greeta.stock.core.events;
+package net.greeta.stock.core.model;
 
-import lombok.Value;
- 
-@Value
-public class PaymentProcessedEvent {
-    private final String orderId;
-    private final String paymentId;
+public enum OrderStatus {
+    CREATED, APPROVED, REJECTED
 }

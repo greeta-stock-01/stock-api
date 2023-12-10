@@ -5,7 +5,7 @@
  */
 package net.greeta.stock.order.command.commands;
 
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.model.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;

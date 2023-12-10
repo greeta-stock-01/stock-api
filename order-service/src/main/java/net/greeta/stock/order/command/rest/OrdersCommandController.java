@@ -5,7 +5,7 @@
  */
 package net.greeta.stock.order.command.rest;
 
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.model.OrderStatus;
 import net.greeta.stock.order.core.model.OrderSummary;
 import net.greeta.stock.order.query.FindOrderQuery;
 import net.greeta.stock.order.command.commands.CreateOrderCommand;

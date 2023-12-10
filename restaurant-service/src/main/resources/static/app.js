@@ -1,5 +1,25 @@
 const restaurantServiceApiBaseUrl = "/restaurant/api/restaurants"
 
+// Initialize Keycloak
+const keycloak = new Keycloak({
+    url: keycloakServerUrl,
+    realm: 'stock-realm',
+    clientId: 'stock-app',
+});
+
+// Initialize and connect to WebSocket after Keycloak is authenticated
+keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
+    if (authenticated) {
+        loadRestaurants(keycloak);
+        connectToWebSocket(keycloak);
+        // Other code that requires authentication
+    }
+});
+
+function logout(keycloak) {
+    keycloak.logout();
+}
+
 function connectToWebSocket(keycloak) {
     const socket = new SockJS('/restaurant/websocket')
     const stompClient = Stomp.over(socket)
@@ -242,21 +262,6 @@ function showModal($modal, header, description, fnApprove) {
 }
 
 $(function () {
-    // Initialize Keycloak
-    const keycloak = new Keycloak({
-        url: keycloakServerUrl,
-        realm: 'stock-realm',
-        clientId: 'stock-app',
-    });
-
-    // Initialize and connect to WebSocket after Keycloak is authenticated
-    keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
-        if (authenticated) {
-            loadRestaurants(keycloak);
-            connectToWebSocket(keycloak);
-            // Other code that requires authentication
-        }
-    });
 
     $('#restaurantForm button[name="btnSave"]').click(function(event) {
         event.preventDefault()
@@ -335,6 +340,9 @@ $(function () {
 
         $.ajax({
             url: restaurantServiceApiBaseUrl.concat("/", restaurantId, "/orders"),
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             success: function(data, textStatus, jqXHR) {
                 const $modal = $('.modal.orders')
                 $modal.find('.header').text(restaurantName + " orders")
@@ -428,7 +436,11 @@ $(function () {
     })
 
     $('.connWebSocket').click(function() {
-        connectToWebSocket()
+        connectToWebSocket(keycloak)
+    })
+
+    $('.keycloakLogout').click(function() {
+        logout(keycloak)
     })
 
 })

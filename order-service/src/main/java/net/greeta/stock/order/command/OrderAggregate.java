@@ -5,10 +5,10 @@
  */
 package net.greeta.stock.order.command;
 
-import net.greeta.stock.order.core.events.OrderApprovedEvent;
-import net.greeta.stock.order.core.events.OrderCreatedEvent;
-import net.greeta.stock.order.core.events.OrderRejectedEvent;
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.events.order.OrderApprovedEvent;
+import net.greeta.stock.core.events.order.OrderCreatedEvent;
+import net.greeta.stock.core.events.order.OrderRejectedEvent;
+import net.greeta.stock.core.model.OrderStatus;
 import net.greeta.stock.order.command.commands.ApproveOrderCommand;
 import net.greeta.stock.order.command.commands.CreateOrderCommand;
 import net.greeta.stock.order.command.commands.RejectOrderCommand;

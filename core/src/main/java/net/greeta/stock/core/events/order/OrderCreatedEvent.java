@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.greeta.stock.order.core.events;
+package net.greeta.stock.core.events.order;
 
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

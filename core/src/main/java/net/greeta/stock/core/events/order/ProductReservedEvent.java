@@ -1,4 +1,4 @@
-package net.greeta.stock.core.events;
+package net.greeta.stock.core.events.order;
 
 import lombok.Builder;
 import lombok.Data;

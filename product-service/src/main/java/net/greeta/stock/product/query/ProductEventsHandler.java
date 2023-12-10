@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-import net.greeta.stock.product.core.events.ProductCreatedEvent;
-import net.greeta.stock.core.events.ProductReservationCancelledEvent;
-import net.greeta.stock.core.events.ProductReservedEvent;
+import net.greeta.stock.core.events.product.ProductCreatedEvent;
+import net.greeta.stock.core.events.order.ProductReservationCancelledEvent;
+import net.greeta.stock.core.events.order.ProductReservedEvent;
 
 @Component
 @ProcessingGroup("product-group")

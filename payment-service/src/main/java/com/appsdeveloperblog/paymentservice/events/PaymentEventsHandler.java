@@ -7,7 +7,7 @@ package com.appsdeveloperblog.paymentservice.events;
 
 import com.appsdeveloperblog.paymentservice.data.PaymentEntity;
 import com.appsdeveloperblog.paymentservice.data.PaymentRepository;
-import net.greeta.stock.core.events.PaymentProcessedEvent;
+import net.greeta.stock.core.events.order.PaymentProcessedEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

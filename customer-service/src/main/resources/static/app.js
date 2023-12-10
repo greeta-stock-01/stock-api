@@ -1,10 +1,32 @@
-const customerServiceApiBaseUrl = "http://localhost:9080/api/customers"
+const customerServiceApiBaseUrl = "/customer/api/customers"
 
-function connectToWebSocket() {
-    const socket = new SockJS('/websocket')
+// Initialize Keycloak
+const keycloak = new Keycloak({
+    url: keycloakServerUrl,
+    realm: 'stock-realm',
+    clientId: 'stock-app',
+});
+
+// Initialize and connect to WebSocket after Keycloak is authenticated
+keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
+    if (authenticated) {
+        loadCustomers(keycloak);
+        connectToWebSocket(keycloak);
+        // Other code that requires authentication
+    }
+});
+
+function logout(keycloak) {
+    keycloak.logout();
+}
+
+function connectToWebSocket(keycloak) {
+    const socket = new SockJS('/customer/websocket')
     const stompClient = Stomp.over(socket)
 
-    stompClient.connect({},
+    stompClient.connect({
+            Authorization: 'Bearer ' + keycloak.token
+        },
         function (frame) {
             console.log('Connected: ' + frame)
             $('.connWebSocket').find('i').removeClass('red').addClass('green')
@@ -32,15 +54,21 @@ function connectToWebSocket() {
     )
 }
 
-function loadCustomers() {
+function loadCustomers(keycloak) {
     $.ajax({
         url: customerServiceApiBaseUrl,
+        headers: {
+            Authorization: 'Bearer ' + keycloak.token
+        },
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
             data.forEach(customer => {
                 addCustomer(customer)
                 $.ajax({
                     url: customerServiceApiBaseUrl.concat("/", customer.id, "/orders"),
+                    headers: {
+                        Authorization: 'Bearer ' + keycloak.token
+                    },
                     contentType: "application/json",
                     success: function(data, textStatus, jqXHR) {
                         data.map(order => {
@@ -106,7 +134,7 @@ function getOrderRow(order) {
 
 function updateCustomer(customer) {
     const $customer = $('#'+customer.id)
-    $customer.find('h3.id').text(customer.name)
+    $customer.find('h3.name').text(customer.name)
     $customer.find('p.address > strong').text(customer.address)
 }
 
@@ -154,9 +182,6 @@ function showModal($modal, header, description, fnApprove) {
 }
 
 $(function () {
-    loadCustomers()
-
-    connectToWebSocket()
 
     $('#customerForm button[name="btnSave"]').click(function(event) {
         event.preventDefault()
@@ -175,6 +200,9 @@ $(function () {
         $.ajax({
             type,
             url,
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             contentType: "application/json",
             data: JSON.stringify({name: customerData.name, address: customerData.address}),
             success: function(data, textStatus, jqXHR) {
@@ -192,6 +220,9 @@ $(function () {
             $.ajax({
                 type: "DELETE",
                 url: customerServiceApiBaseUrl.concat("/", id),
+                headers: {
+                    Authorization: 'Bearer ' + keycloak.token
+                },
                 success: function(data, textStatus, jqXHR) {},
                 error: function (jqXHR, textStatus, errorThrown) {}
             })
@@ -202,6 +233,9 @@ $(function () {
         const id = $(this).closest('div.item').attr('id')
         $.ajax({
             url: customerServiceApiBaseUrl.concat("/", id),
+            headers: {
+                Authorization: 'Bearer ' + keycloak.token
+            },
             success: function(data, textStatus, jqXHR) {
                 fillForm(data)
             },
@@ -214,6 +248,10 @@ $(function () {
     })
 
     $('.connWebSocket').click(function() {
-        connectToWebSocket()
+        connectToWebSocket(keycloak)
+    })
+
+    $('.keycloakLogout').click(function() {
+        logout(keycloak)
     })
 })

@@ -5,7 +5,7 @@
  */
 package net.greeta.stock.order.core.data;
 
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.model.OrderStatus;
 import java.io.Serializable;
 
 import jakarta.persistence.*;

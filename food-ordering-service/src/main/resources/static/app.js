@@ -1,10 +1,34 @@
-const foodOrderingServiceApiBaseUrl = "http://localhost:9082/api"
+const foodOrderingServiceApiBaseUrl = "/food-ordering/api"
 
-function connectToWebSocket() {
-    const socket = new SockJS('/websocket')
+// Initialize Keycloak
+const keycloak = new Keycloak({
+    url: keycloakServerUrl,
+    realm: 'stock-realm',
+    clientId: 'stock-app',
+});
+
+// Initialize and connect to WebSocket after Keycloak is authenticated
+keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
+    if (authenticated) {
+        loadCustomers(keycloak)
+        loadRestaurants(keycloak)
+        loadOrders(keycloak)
+        connectToWebSocket(keycloak)
+        // Other code that requires authentication
+    }
+});
+
+function logout(keycloak) {
+    keycloak.logout();
+}
+
+function connectToWebSocket(keycloak) {
+    const socket = new SockJS('/food-ordering/websocket')
     const stompClient = Stomp.over(socket)
 
-    stompClient.connect({},
+    stompClient.connect({
+            Authorization: 'Bearer ' + keycloak.token
+        },
         function (frame) {
             console.log('Connected: ' + frame)
             $('.connWebSocket').find('i').removeClass('red').addClass('green')
@@ -56,9 +80,12 @@ function connectToWebSocket() {
     )
 }
 
-function loadCustomers() {
+function loadCustomers(keycloak) {
     $.ajax({
         url: foodOrderingServiceApiBaseUrl.concat("/customers"),
+        headers: {
+            Authorization: 'Bearer ' + keycloak.token
+        },
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
             data.forEach(customer => {
@@ -69,9 +96,12 @@ function loadCustomers() {
     })
 }
 
-function loadRestaurants() {
+function loadRestaurants(keycloak) {
     $.ajax({
         url: foodOrderingServiceApiBaseUrl.concat("/restaurants"),
+        headers: {
+            Authorization: 'Bearer ' + keycloak.token
+        },
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
             data.forEach(restaurant => {
@@ -86,9 +116,12 @@ function loadRestaurants() {
     })
 }
 
-function loadOrders() {
+function loadOrders(keycloak) {
     $.ajax({
         url: foodOrderingServiceApiBaseUrl.concat("/orders"),
+        headers: {
+            Authorization: 'Bearer ' + keycloak.token
+        },
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
             data.forEach(order => {
@@ -262,11 +295,6 @@ function showModal($modal, header, description, fnApprove) {
 }
 
 $(function () {
-    loadCustomers()
-    loadRestaurants()
-    loadOrders()
-
-    connectToWebSocket()
 
     $('.menu .item').tab()
     $('.ui.dropdown').dropdown()
@@ -278,6 +306,9 @@ $(function () {
             $.ajax({
                 type: 'POST',
                 url: foodOrderingServiceApiBaseUrl.concat("/orders"),
+                headers: {
+                    Authorization: 'Bearer ' + keycloak.token
+                },
                 contentType: "application/json",
                 data: JSON.stringify(orderRequest),
                 success: function(data, textStatus, jqXHR) {
@@ -297,6 +328,10 @@ $(function () {
     })
 
     $('.connWebSocket').click(function() {
-        connectToWebSocket()
+        connectToWebSocket(keycloak)
+    })
+
+    $('.keycloakLogout').click(function() {
+        logout(keycloak)
     })
 })

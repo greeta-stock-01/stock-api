@@ -1,6 +1,6 @@
-package net.greeta.stock.order.core.events;
+package net.greeta.stock.core.events.order;
 
-import net.greeta.stock.order.core.model.OrderStatus;
+import net.greeta.stock.core.model.OrderStatus;
 
 import lombok.Value;
 

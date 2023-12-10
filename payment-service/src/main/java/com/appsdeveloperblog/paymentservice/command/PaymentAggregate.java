@@ -6,7 +6,7 @@
 package com.appsdeveloperblog.paymentservice.command;
 
 import net.greeta.stock.core.commands.ProcessPaymentCommand;
-import net.greeta.stock.core.events.PaymentProcessedEvent;
+import net.greeta.stock.core.events.order.PaymentProcessedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
