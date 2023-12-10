@@ -69,7 +69,7 @@ sh docker-app-restart.sh customer
 
 - create new order with quantity that exceeds product quantity: Make sure that order status is `Rejected` and product quantity is rejected
 
-- Use `Axon Server Console` to monitor Event Sourcing and Saga Transaction Events, related to `Approved` and `Rejected` Orders: `http://localhost:8024/`
+- Use `Axon Server Console` to monitor Event Sourcing and Saga Transaction Events, related to `Approved` and `Rejected` Orders: http://localhost:8024/
 
 - Warning! If Swagger UI fails to load on the first try, please, refresh the page!
 
